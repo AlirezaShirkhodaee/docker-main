@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>image processing</title>
+</head>
+<body>
+    <h1>پردازش تصویر</h1>
+    <form action="{{ url_for('home')}}"  method="post">
+        <h4>تشخیص چهره</h4>
+        <input type="radio" id="yes" name="FaceDetection" value="yes">
+        <label for="yes">انجام شود</label><br>
+        <input type="radio" id="no" name="FaceDetection" value="no" checked="checked">
+        <label for="no">انجام نشود</label><br>
+        <input type="text"  name="image"  placeholder="Enter your image address">
+        <button>show</button>
+    </form>
+    {% if post_request %}
+        {% if image_exists %}
+            <h4>The name of image file is : {{image}}</h4>
+        {% else %}
+            <h4>Image Not Found</h4>
+        {% endif %}
+    {% endif %}
+</body>
+</html>
