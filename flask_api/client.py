@@ -4,8 +4,8 @@ import argparse
 import codecs
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--image', default='pic12.jpeg', type=str)
-parser.add_argument('--face_detection', default=False, action='store_true')
+parser.add_argument('--image', default='pic10.jpeg', type=str)
+parser.add_argument('--face_detection', default=True, action='store_true')
 parser.add_argument('--output_file', default='output.png', type=str)
 parser.add_argument('--server_ip', default='localhost', type=str)
 parser.add_argument('--server_port', default=5000, type=int)
