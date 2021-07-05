@@ -5,14 +5,17 @@ from glob import glob
 import os
 import cv2
 
+#setting up server_ip and port_ip and volume location
 server_ip = os.getenv("server_ip", default='0.0.0.0')
 server_port = int(os.getenv("server_port", default='5000'))
 volume = os.getenv("volume_address", default='Volume')
+#import an opencv model for face recognition
 cascPath = os.getenv("cascade", default='haarcascade_frontalface_default.xml')
 debug = int(os.getenv("dubug", default='0'))
 
 faceCascade = cv2.CascadeClassifier(cascPath)
 
+#listing all images in volume address
 image_formats = ['.png', '.jpg', '.jpeg', '.gif']
 image_list = []
 for image_format in image_formats:
@@ -21,13 +24,13 @@ for image_format in image_formats:
 app = Flask(__name__)
 app.config["DEBUG"] = (debug == 1)
 
-
+#function to get serialof image
 def serialize_image(image):
     with open(image, "rb") as imageFile:
         str = base64.b64encode(imageFile.read())
     return str
 
-
+# this function gets name of pic and returns a dictionary contains faces
 def face_detection(image):
     try:
         face_dict = os.popen(f'curl -X POST -F "file=@{image}" http://localhost:8080/').read()
@@ -38,8 +41,11 @@ def face_detection(image):
 
 def face_detector_tool(image):
     image_address = volume + os.sep + image
+    #load image
     img = cv2.imread(image_address)
+    #gray scale it
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    #find faces in image
 
     faces = faceCascade.detectMultiScale(
         gray,
@@ -58,7 +64,7 @@ def face_detector_tool(image):
     image_list.append(volume + os.sep + filename)
     return filename
 
-
+#runs when client make a request to /image_processing
 @app.route('/image_processing', methods=['GET', 'POST'])
 def home():
     post_request = False
@@ -106,5 +112,5 @@ def rest_api_face_detection():
         response['face detection'] = None
     return json.dumps(response)
 
-
+# run this program on server_ip and server_port
 app.run(port=server_port, host=server_ip)
